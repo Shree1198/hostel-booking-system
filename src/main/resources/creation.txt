@@ -1,0 +1,12 @@
+Check in time and chekc out time
+if user have not given any check out time
+then consider it as
+
+
+
+
+1. *User Prompt:* "I have hostel room and booking entity want to create spring boot rest api assign room to user through booking api what should be approch"
+2. *User Prompt:* "What if this room have beds and and room also have floor no like on which floor it is how to add these how to book ex room 101 's random available bed"
+3. *User Prompt:* "How to maintain cancle booking"
+4. *User Prompt:* "Add hostel entity in room and give all entiryes"
+5. *User Prompt:* "Give me all the prompts in this chat"
