@@ -3,6 +3,7 @@ package com.shree.hostelbooking.service;
 import com.shree.hostelbooking.dto.RoomDTO;
 import com.shree.hostelbooking.entity.Room;
 import com.shree.hostelbooking.repository.RoomRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Autowired
     private RoomRepository roomRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public List<RoomDTO> getAllRooms() {
@@ -32,9 +36,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDTO saveRoom(RoomDTO roomDTO) {
-        Room room = convertToEntity(roomDTO);
-        Room savedRoom = roomRepository.save(room);
-        return convertToDTO(savedRoom);
+        Room savedRoom = roomRepository.save(modelMapper.map(roomDTO,Room.class));
+        return modelMapper.map(savedRoom, RoomDTO.class);
     }
 
     @Override
@@ -54,7 +57,6 @@ public class RoomServiceImpl implements RoomService {
         roomDTO.setId(room.getId());
         roomDTO.setRoomNumber(room.getRoomNumber());
         roomDTO.setType(room.getType());
-        roomDTO.setAvailable(room.isAvailable());
         return roomDTO;
     }
 
@@ -63,7 +65,8 @@ public class RoomServiceImpl implements RoomService {
         room.setId(roomDTO.getId());
         room.setRoomNumber(roomDTO.getRoomNumber());
         room.setType(roomDTO.getType());
-        room.setAvailable(roomDTO.isAvailable());
         return room;
     }
+
+    
 }

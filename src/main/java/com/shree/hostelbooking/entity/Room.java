@@ -18,7 +18,7 @@ public class Room {
     private String type;
 //    private boolean isAvailable;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Bed> beds;
 
 }

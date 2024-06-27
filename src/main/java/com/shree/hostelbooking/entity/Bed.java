@@ -10,9 +10,9 @@ public class Bed {
 
     private boolean isAvailable;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
+//    @ManyToOne
+//    @JoinColumn(name = "room_id")
+//    private Room room;
 
     // Getters and Setters
 }

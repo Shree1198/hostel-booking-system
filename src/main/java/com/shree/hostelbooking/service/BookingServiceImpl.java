@@ -1,7 +1,9 @@
 package com.shree.hostelbooking.service;
 
+import com.shree.hostelbooking.dto.BedDTO;
 import com.shree.hostelbooking.dto.BookingDTO;
 import com.shree.hostelbooking.dto.RoomDTO;
+import com.shree.hostelbooking.entity.Bed;
 import com.shree.hostelbooking.entity.Booking;
 import com.shree.hostelbooking.entity.Room;
 import com.shree.hostelbooking.repository.BookingRepository;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -23,33 +26,38 @@ public class BookingServiceImpl implements BookingService {
 
     private final RoomService roomService;
 
+    private final BedService bedService;
+
     private final ModelMapper modelMapper;
 
-    public BookingServiceImpl(BookingRepository bookingRepository, RoomService roomService, ModelMapper modelMapper) {
+    public BookingServiceImpl(BookingRepository bookingRepository, RoomService roomService, BedService bedService, ModelMapper modelMapper) {
         this.bookingRepository = bookingRepository;
         this.roomService = roomService;
+        this.bedService = bedService;
         this.modelMapper = modelMapper;
     }
 
     @Override
     public BookingDTO createBooking(Long roomId, String user, LocalDate checkIn, LocalDate checkOut) {
         RoomDTO roomDTO = roomService.getRoomById(roomId);
-        log.info("room found : {}", roomDTO);
-        if (roomDTO == null || !roomDTO.isAvailable()) {
-            throw new RuntimeException("Room is not available");
+        List<BedDTO> availableBeds = bedService.getAvailableBedsByRoom(roomId);
+        if (availableBeds.isEmpty()) {
+            throw new RuntimeException("No available beds in the room");
         }
 
+        BedDTO bedDTO = availableBeds.get(0); // Booking the first available bed
+
         Booking booking = new Booking();
-        booking.setRoom(modelMapper.map(roomDTO, Room.class)); // Assuming Room constructor with id
+     //   booking.setRoom(modelMapper.map(roomDTO, Room.class));
+        booking.setBed(modelMapper.map(bedDTO, Bed.class));
         booking.setUser(user);
         booking.setBookingTime(LocalDateTime.now());
         booking.setCheckIn(checkIn);
         booking.setCheckOut(checkOut);
 
-        roomDTO.setAvailable(false);
+        bedDTO.setAvailable(false);
         roomService.updateRoom(roomDTO);
 
-        log.info("booking created : {}", booking);
         Booking savedBooking = bookingRepository.save(booking);
         return convertToDTO(savedBooking);
     }
