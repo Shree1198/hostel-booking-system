@@ -1,7 +1,9 @@
 package com.shree.hostelbooking.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 public class Bed {
     @Id
@@ -10,9 +12,9 @@ public class Bed {
 
     private boolean isAvailable;
 
-//    @ManyToOne
-//    @JoinColumn(name = "room_id")
-//    private Room room;
+    @ManyToOne(cascade=CascadeType.PERSIST)
+    @JoinColumn(name = "bed_room_id",referencedColumnName="roomId")
+    private Room room;
 
     // Getters and Setters
 }

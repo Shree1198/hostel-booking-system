@@ -6,10 +6,10 @@ import com.shree.hostelbooking.dto.RoomDTO;
 import com.shree.hostelbooking.entity.Bed;
 import com.shree.hostelbooking.entity.Booking;
 import com.shree.hostelbooking.entity.Room;
+import com.shree.hostelbooking.exception.ResourceNotFoundException;
 import com.shree.hostelbooking.repository.BookingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +23,8 @@ import java.util.List;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
-
     private final RoomService roomService;
-
     private final BedService bedService;
-
     private final ModelMapper modelMapper;
 
     public BookingServiceImpl(BookingRepository bookingRepository, RoomService roomService, BedService bedService, ModelMapper modelMapper) {
@@ -38,34 +35,37 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDTO createBooking(Long roomId, String user, LocalDate checkIn, LocalDate checkOut) {
+    public BookingDTO createBooking(Long roomId, String user, LocalDate checkIn, LocalDate checkOut) throws ResourceNotFoundException {
         RoomDTO roomDTO = roomService.getRoomById(roomId);
-        List<BedDTO> availableBeds = bedService.getAvailableBedsByRoom(roomId);
+        List<BedDTO> availableBeds = roomService.getAvailableBedsByRoom(roomDTO);
+
         if (availableBeds.isEmpty()) {
-            throw new RuntimeException("No available beds in the room");
+            throw new ResourceNotFoundException("No available beds in the room");
         }
 
         BedDTO bedDTO = availableBeds.get(0); // Booking the first available bed
 
+        bedDTO.setAvailable(false);
+
         Booking booking = new Booking();
-     //   booking.setRoom(modelMapper.map(roomDTO, Room.class));
+        booking.setRoom(modelMapper.map(roomDTO, Room.class));
         booking.setBed(modelMapper.map(bedDTO, Bed.class));
         booking.setUser(user);
         booking.setBookingTime(LocalDateTime.now());
         booking.setCheckIn(checkIn);
         booking.setCheckOut(checkOut);
 
-        bedDTO.setAvailable(false);
-        roomService.updateRoom(roomDTO);
+
+      //  roomService.updateRoom(roomDTO);
 
         Booking savedBooking = bookingRepository.save(booking);
-        return convertToDTO(savedBooking);
+        return modelMapper.map(savedBooking, BookingDTO.class);
     }
 
     @Override
-    public BookingDTO getBookingById(Long id) {
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        return (booking != null) ? convertToDTO(booking) : null;
+    public BookingDTO getBookingById(Long id) throws ResourceNotFoundException {
+        Booking booking = bookingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
+        return modelMapper.map(booking, BookingDTO.class);
     }
 
     @Override
@@ -75,18 +75,6 @@ public class BookingServiceImpl implements BookingService {
         // get room get bed set as available
 
         //set status of booking as canceled
-
         return null;
-    }
-
-    private BookingDTO convertToDTO(Booking booking) {
-        BookingDTO bookingDTO = new BookingDTO();
-        bookingDTO.setId(booking.getId());
-        bookingDTO.setRoomId(booking.getRoom().getId());
-        bookingDTO.setUser(booking.getUser());
-        bookingDTO.setBookingDateTime(booking.getBookingTime());
-        bookingDTO.setCheckIn(booking.getCheckIn());
-        bookingDTO.setCheckOut(booking.getCheckOut());
-        return bookingDTO;
     }
 }

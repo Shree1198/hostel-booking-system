@@ -11,14 +11,14 @@ import java.util.List;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long roomId;
     //
     private String roomNumber;
     // different type for now AC / non AC
     private String type;
 //    private boolean isAvailable;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Bed> beds;
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private List<Bed> beds;
 
 }

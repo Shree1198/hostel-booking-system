@@ -14,10 +14,10 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Room room;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Bed bed;
 
     private String user;
