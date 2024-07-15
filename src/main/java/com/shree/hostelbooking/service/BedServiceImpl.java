@@ -18,12 +18,14 @@ import java.util.stream.Collectors;
 @Transactional
 public class BedServiceImpl implements BedService {
 
-    @Autowired
-    private BedRepository bedRepository;
+    private final BedRepository bedRepository;
 
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    public BedServiceImpl(BedRepository bedRepository, ModelMapper modelMapper) {
+        this.bedRepository = bedRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public List<BedDTO> findBedsByRoom(Room room) throws ResourceNotFoundException {

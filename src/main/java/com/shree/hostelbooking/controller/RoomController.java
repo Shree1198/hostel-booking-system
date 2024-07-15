@@ -12,9 +12,11 @@ import java.util.List;
 @RequestMapping("/rooms")
 @Slf4j
 public class RoomController {
+    private final RoomService roomService;
 
-    @Autowired
-    private RoomService roomService;
+    public RoomController(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     @GetMapping
     public List<RoomDTO> getAllRooms() {
@@ -28,7 +30,7 @@ public class RoomController {
 
     @PostMapping
     public RoomDTO createRoom(@RequestBody RoomDTO roomDTO) {
-        log.info("RoomController.createRoom RoomDTO-{}",roomDTO);
+        log.info("RoomController.createRoom RoomDTO-{}", roomDTO);
         return roomService.saveRoom(roomDTO);
     }
 

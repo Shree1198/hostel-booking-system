@@ -19,7 +19,6 @@ public class Booking {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Bed bed;
-
     private String user;
     private LocalDateTime bookingTime;
     private LocalDate checkIn;

@@ -12,14 +12,15 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
-
-    @Autowired
-    private BookingService bookingService;
+    private final BookingService bookingService;
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
 
     @PostMapping("/create")
     public BookingDTO createBooking(@RequestParam Long roomId,
                                     @RequestParam String user,
-                                    @RequestParam  LocalDate checkIn,
+                                    @RequestParam LocalDate checkIn,
                                     @RequestParam LocalDate checkOut) {
         return bookingService.createBooking(roomId, user, checkIn, checkOut);
     }

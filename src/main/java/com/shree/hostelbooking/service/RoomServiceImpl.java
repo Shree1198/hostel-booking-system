@@ -22,17 +22,13 @@ import java.util.stream.Collectors;
 
 public class RoomServiceImpl implements RoomService {
 
-    @Autowired
     private final RoomRepository roomRepository;
-
-    @Autowired
-    BedService bedService;
-
-    @Autowired
+    private final BedService bedService;
     private final ModelMapper modelMapper;
 
-    public RoomServiceImpl(RoomRepository roomRepository, ModelMapper modelMapper) {
+    public RoomServiceImpl(RoomRepository roomRepository, BedService bedService, ModelMapper modelMapper) {
         this.roomRepository = roomRepository;
+        this.bedService = bedService;
         this.modelMapper = modelMapper;
     }
 
@@ -52,10 +48,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDTO saveRoom(RoomDTO roomDTO) {
 
-        Room savedRoom = null ;
+        Room savedRoom = null;
         List<BedDTO> saveBeds = null;
 
-        List< BedDTO> bedsToSave = roomDTO.getBeds();
+        List<BedDTO> bedsToSave = roomDTO.getBeds();
 
         Room room = new Room();
         room.setRoomNumber(roomDTO.getRoomNumber());
@@ -63,18 +59,18 @@ public class RoomServiceImpl implements RoomService {
 
         List<Bed> beds = new ArrayList<>();
 
-        if(bedsToSave != null && !bedsToSave.isEmpty()){
-            for (BedDTO bedDTO : bedsToSave){
+        if (bedsToSave != null && !bedsToSave.isEmpty()) {
+            for (BedDTO bedDTO : bedsToSave) {
                 Bed bed = new Bed();
                 bed.setRoom(room);
                 bed.setAvailable(true);
                 beds.add(bed);
             }
             saveBeds = bedService.saveBeds(beds);
-            log.info("saved beds -{}",saveBeds);
+            log.info("saved beds -{}", saveBeds);
             savedRoom = roomRepository.findByRoomNumber(roomDTO.getRoomNumber());
-        }else{
-             savedRoom = roomRepository.save(modelMapper.map(roomDTO, Room.class));
+        } else {
+            savedRoom = roomRepository.save(modelMapper.map(roomDTO, Room.class));
         }
 
 
@@ -90,12 +86,11 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<BedDTO> getAvailableBedsByRoom(RoomDTO roomDTO) throws ResourceNotFoundException {
-         Room room = modelMapper.map(roomDTO, Room.class);
+        Room room = modelMapper.map(roomDTO, Room.class);
         List<BedDTO> availableBeds = bedService.findBedsByRoom(room);
 
         return availableBeds;
     }
-
 
 
     @Override
