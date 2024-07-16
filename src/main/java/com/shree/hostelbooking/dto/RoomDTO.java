@@ -10,6 +10,6 @@ public class RoomDTO {
     private String roomNumber;
     private String type;
 //    private boolean isAvailable;
-    private List<BedDTO> beds;
+   // private List<BedDTO> beds;
 
 }

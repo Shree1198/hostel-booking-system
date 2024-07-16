@@ -12,8 +12,8 @@ public class Bed {
 
     private boolean isAvailable;
 
-    @ManyToOne(cascade=CascadeType.PERSIST)
-    @JoinColumn(name = "bed_room_id",referencedColumnName="roomId")
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "bed_room_id", referencedColumnName = "roomId")
     private Room room;
 
     // Getters and Setters

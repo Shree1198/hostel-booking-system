@@ -19,5 +19,5 @@ public interface RoomService {
 
     void deleteRoom(Long id) throws ResourceNotFoundException;
 
-    List<BedDTO> getAvailableBedsByRoom(RoomDTO roomDTO);
+   // List<BedDTO> getAvailableBedsByRoom(RoomDTO roomDTO);
 }

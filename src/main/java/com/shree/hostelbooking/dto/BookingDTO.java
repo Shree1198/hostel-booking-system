@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class BookingDTO {
     private Long id;
-    private Long roomId;
+    private BedDTO bedDTO;
     private String user;
 
     //to be used for audit and availability cal.

@@ -6,6 +6,6 @@ import lombok.Data;
 public class BedDTO {
     private Long id;
     private boolean isAvailable;
-
+    private RoomDTO roomDTO;
     // Getters and Setters
 }

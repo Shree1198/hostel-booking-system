@@ -10,7 +10,10 @@ import java.util.List;
 public interface BedService {
    // List<BedDTO> getAvailableBedsByRoom(Long roomId) throws ResourceNotFoundException;
 
-    List<BedDTO> saveBeds(List<Bed> beds);
+    List<BedDTO> saveBeds(List<Bed> beds, Long roomId);
 
-    List<BedDTO>  findBedsByRoom(Room room);
+    List<BedDTO>  findBedsByRoom(Long roomId);
+
+    // Method to update a bed
+    BedDTO updateBed(BedDTO bedDTO);
 }
