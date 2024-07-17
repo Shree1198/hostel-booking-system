@@ -36,18 +36,15 @@ public class BedServiceImpl implements BedService {
 
         List<Bed> availableBeds = bedRepository.findByRoomAndIsAvailable(roomId);
 
-        log.info("BedServiceImpl.findBedsByRoom --> :{}",availableBeds);
-        return  availableBeds.stream().map(this::bedToDTO).collect(Collectors.toList());
+        log.info("BedServiceImpl.findBedsByRoom --> :{}", availableBeds);
+        return availableBeds.stream().map(this::bedToDTO).collect(Collectors.toList());
     }
 
     @Override
     public List<BedDTO> saveBeds(List<Bed> beds, Long roomId) {
         RoomDTO roomDTO = roomService.getRoomById(roomId);
 
-        beds.stream().map(bed -> {
-            bed.setRoom(modelMapper.map(roomDTO,Room.class));
-            return bed;
-        }).collect(Collectors.toList());
+        beds.stream().peek(bed -> bed.setRoom(modelMapper.map(roomDTO, Room.class))).collect(Collectors.toList());
 
 
         List<Bed> bedList = bedRepository.saveAll(beds);
@@ -60,20 +57,27 @@ public class BedServiceImpl implements BedService {
     public BedDTO updateBed(BedDTO bedDTO) {
 
         //Bed bed = modelMapper.map(bedDTO, Bed.class);
-        Bed bed =  bedRepository.findById(bedDTO.getId()).get();
-        bed.setAvailable(false);
-      //  bed.setRoom(modelMapper.map(bedDTO.getRoomDTO());
+        Bed bed = bedRepository.findById(bedDTO.getId()).get();
+        bed.setAvailability(false);
+        //  bed.setRoom(modelMapper.map(bedDTO.getRoomDTO());
 
 //        Bed updatedBed = bedRepository.save(bed);
         return modelMapper.map(bed, BedDTO.class);
+    }
+
+    @Override
+    public void deleteBed(Long bedId) throws ResourceNotFoundException {
+        Bed bed = bedRepository.findById(bedId).orElseThrow(() -> new ResourceNotFoundException("Bed not found with ID: " + bedId));
+        bedRepository.delete(bed);
+        log.info("Bed with ID {} has been deleted", bedId);
     }
 
     private BedDTO bedToDTO(Bed bed) {
 
         BedDTO bedDTO = new BedDTO();
         bedDTO.setId(bed.getId());
-        bedDTO.setAvailable(bed.isAvailable());
-        bedDTO.setRoomDTO(modelMapper.map(bed.getRoom(),RoomDTO.class));
+        bedDTO.setAvailability(bed.isAvailability());
+        bedDTO.setRoom(modelMapper.map(bed.getRoom(), RoomDTO.class));
         return bedDTO;
     }
 }

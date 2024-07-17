@@ -1,5 +1,6 @@
 package com.shree.hostelbooking.dto;
 
+import jakarta.validation.constraints.AssertTrue;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class BookingDTO {
     private Long id;
-    private BedDTO bedDTO;
+    private BedDTO bed;
     private String user;
 
     //to be used for audit and availability cal.
@@ -19,5 +20,11 @@ public class BookingDTO {
     // if not given then consider one day booking
     private LocalDate checkOut;
 
-    // Getters and Setters
+    @AssertTrue(message = "Check-out date must be after check-in date")
+    public boolean isCheckOutAfterCheckIn() {
+        if (checkIn == null || checkOut == null) {
+            return true; // Handle null checks separately if needed
+        }
+        return checkOut.isAfter(checkIn);
+    }
 }

@@ -16,4 +16,6 @@ public interface BedService {
 
     // Method to update a bed
     BedDTO updateBed(BedDTO bedDTO);
+
+    void deleteBed(Long bedId) throws ResourceNotFoundException;
 }

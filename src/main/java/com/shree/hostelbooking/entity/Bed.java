@@ -3,6 +3,8 @@ package com.shree.hostelbooking.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 public class Bed {
@@ -10,11 +12,12 @@ public class Bed {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private boolean isAvailable;
+ //   private boolean availability;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "bed_room_id", referencedColumnName = "roomId")
     private Room room;
 
-    // Getters and Setters
+    private LocalDate checkIn;
+    private LocalDate checkOut;
 }

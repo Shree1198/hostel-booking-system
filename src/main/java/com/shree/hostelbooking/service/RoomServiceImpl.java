@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
-//    private final BedService bedService;
+    //    private final BedService bedService;
     private final ModelMapper modelMapper;
 
     private final BedRepository bedRepository;
 
-    public RoomServiceImpl(RoomRepository roomRepository,  ModelMapper modelMapper, BedRepository bedRepository) {
+    public RoomServiceImpl(RoomRepository roomRepository, ModelMapper modelMapper, BedRepository bedRepository) {
         this.roomRepository = roomRepository;
 //        this.bedService = bedService;
         this.modelMapper = modelMapper;
@@ -94,7 +94,7 @@ public class RoomServiceImpl implements RoomService {
         Room savedRoom;
         List<BedDTO> saveBeds = null;
 
-       // List<BedDTO> bedsToSave = roomDTO.getBeds();
+        // List<BedDTO> bedsToSave = roomDTO.getBeds();
 
         Room room = modelMapper.map(roomDTO, Room.class);
 
@@ -118,7 +118,7 @@ public class RoomServiceImpl implements RoomService {
         dto.setRoomNumber(savedRoom.getRoomNumber());
         dto.setType(savedRoom.getType());
         dto.setId(savedRoom.getRoomId());
-      //  dto.setBeds(saveBeds);
+        //  dto.setBeds(saveBeds);
 
         return dto;
     }
@@ -136,11 +136,13 @@ public class RoomServiceImpl implements RoomService {
     public RoomDTO updateRoom(RoomDTO roomDTO) {
         Room room = modelMapper.map(roomDTO, Room.class);
         Room updatedRoom = roomRepository.save(room);
+        log.info("RoomServiceImpl.updateRoom->{}", updatedRoom);
         return modelMapper.map(updatedRoom, RoomDTO.class);
     }
 
     @Override
     public void deleteRoom(Long id) {
+        log.info("RoomServiceImpl.RoomId->{}", id);
         roomRepository.deleteById(id);
     }
 

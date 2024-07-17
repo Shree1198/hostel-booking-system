@@ -34,4 +34,10 @@ public class BedController {
         BedDTO updatedBed = bedService.updateBed(bedDTO);
         return ResponseEntity.ok(updatedBed);
     }
+
+    @DeleteMapping("/{bedId}")
+    public ResponseEntity<String> deleteBed(@PathVariable Long bedId) {
+        bedService.deleteBed(bedId);
+        return ResponseEntity.ok("Bed with ID " + bedId + " has been deleted successfully.");
+    }
 }
