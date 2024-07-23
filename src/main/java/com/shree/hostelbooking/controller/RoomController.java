@@ -2,6 +2,7 @@ package com.shree.hostelbooking.controller;
 
 import com.shree.hostelbooking.dto.RoomDTO;
 import com.shree.hostelbooking.service.RoomService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,10 +10,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rooms")
+@Slf4j
 public class RoomController {
+    private final RoomService roomService;
 
-    @Autowired
-    private RoomService roomService;
+    public RoomController(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     @GetMapping
     public List<RoomDTO> getAllRooms() {
@@ -26,6 +30,7 @@ public class RoomController {
 
     @PostMapping
     public RoomDTO createRoom(@RequestBody RoomDTO roomDTO) {
+        log.info("RoomController.createRoom RoomDTO-{}", roomDTO);
         return roomService.saveRoom(roomDTO);
     }
 

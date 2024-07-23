@@ -11,14 +11,17 @@ import java.util.List;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long roomId;
     //
     private String roomNumber;
     // different type for now AC / non AC
     private String type;
-//    private boolean isAvailable;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Bed> beds;
+    @ManyToOne
+    @JoinColumn(name = "hostel_id")
+    private Hostel hostel;
+
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private List<Bed> beds;
 
 }

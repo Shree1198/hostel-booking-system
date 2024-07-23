@@ -1,69 +1,154 @@
 package com.shree.hostelbooking.service;
 
+import com.shree.hostelbooking.dto.BedDTO;
 import com.shree.hostelbooking.dto.RoomDTO;
+import com.shree.hostelbooking.entity.Bed;
 import com.shree.hostelbooking.entity.Room;
+import com.shree.hostelbooking.exception.ResourceNotFoundException;
+import com.shree.hostelbooking.repository.BedRepository;
 import com.shree.hostelbooking.repository.RoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
+
 public class RoomServiceImpl implements RoomService {
 
-    @Autowired
-    private RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
+    //    private final BedService bedService;
+    private final ModelMapper modelMapper;
+
+    private final BedRepository bedRepository;
+
+    public RoomServiceImpl(RoomRepository roomRepository, ModelMapper modelMapper, BedRepository bedRepository) {
+        this.roomRepository = roomRepository;
+//        this.bedService = bedService;
+        this.modelMapper = modelMapper;
+        this.bedRepository = bedRepository;
+    }
 
     @Override
     public List<RoomDTO> getAllRooms() {
         return roomRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(room -> modelMapper.map(room, RoomDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public RoomDTO getRoomById(Long id) {
         Room room = roomRepository.findById(id).orElse(null);
-        return (room != null) ? convertToDTO(room) : null;
+        return (room != null) ? modelMapper.map(room, RoomDTO.class) : null;
     }
 
+//    @Override
+//    @Transactional
+//    public RoomDTO saveRoom(RoomDTO roomDTO) {
+//
+//        Room savedRoom = null;
+//        List<BedDTO> saveBeds = null;
+//
+//        List<BedDTO> bedsToSave = roomDTO.getBeds();
+//
+//        Room room = new Room();
+//        room.setRoomNumber(roomDTO.getRoomNumber());
+//        room.setType(roomDTO.getType());
+//
+//        List<Bed> beds = new ArrayList<>();
+//
+//        if (bedsToSave != null && !bedsToSave.isEmpty()) {
+//            for (BedDTO bedDTO : bedsToSave) {
+//                Bed bed = new Bed();
+//                bed.setRoom(room);
+//                bed.setAvailable(true);
+//                beds.add(bed);
+//            }
+//            saveBeds = bedService.saveBeds(beds);
+//            log.info("saved beds -{}", saveBeds);
+//            savedRoom = roomRepository.findByRoomNumber(roomDTO.getRoomNumber());
+//        } else {
+//            savedRoom = roomRepository.save(modelMapper.map(roomDTO, Room.class));
+//        }
+//
+//
+//        RoomDTO dto = new RoomDTO();
+//        dto.setRoomNumber(savedRoom.getRoomNumber());
+//        dto.setType(savedRoom.getType());
+//        dto.setId(savedRoom.getRoomId());
+//        dto.setBeds(saveBeds);
+//
+//
+//        return dto;
+//    }
+
     @Override
+    @Transactional
     public RoomDTO saveRoom(RoomDTO roomDTO) {
-        Room room = convertToEntity(roomDTO);
-        Room savedRoom = roomRepository.save(room);
-        return convertToDTO(savedRoom);
+        Room savedRoom;
+        List<BedDTO> saveBeds = null;
+
+        // List<BedDTO> bedsToSave = roomDTO.getBeds();
+
+        Room room = modelMapper.map(roomDTO, Room.class);
+
+        // Save the room first to make it managed
+        savedRoom = roomRepository.save(room);
+
+//        List<Bed> beds = new ArrayList<>();
+
+//        if (bedsToSave != null && !bedsToSave.isEmpty()) {
+//            for (BedDTO betDto : bedsToSave) {
+//                Bed bed = new Bed();
+//                bed.setRoom(savedRoom); // Associate bed with the managed room
+//                bed.setAvailable(true);
+//                beds.add(bed);
+//            }
+//            saveBeds = bedService.saveBeds(beds);
+//            log.info("saved beds -{}", saveBeds);
+//        }
+
+        RoomDTO dto = new RoomDTO();
+        dto.setRoomNumber(savedRoom.getRoomNumber());
+        dto.setType(savedRoom.getType());
+        dto.setId(savedRoom.getRoomId());
+        //  dto.setBeds(saveBeds);
+
+        return dto;
     }
+
+//    @Override
+//    public List<BedDTO> getAvailableBedsByRoom(RoomDTO roomDTO) throws ResourceNotFoundException {
+//        Room room = modelMapper.map(roomDTO, Room.class);
+//        List<BedDTO> availableBeds = bedService.findBedsByRoom(room);
+//
+//        return availableBeds;
+//    }
+
 
     @Override
     public RoomDTO updateRoom(RoomDTO roomDTO) {
-        Room room = convertToEntity(roomDTO);
+        Room room = modelMapper.map(roomDTO, Room.class);
         Room updatedRoom = roomRepository.save(room);
-        return convertToDTO(updatedRoom);
+        log.info("RoomServiceImpl.updateRoom->{}", updatedRoom);
+        return modelMapper.map(updatedRoom, RoomDTO.class);
     }
 
     @Override
     public void deleteRoom(Long id) {
+        log.info("RoomServiceImpl.RoomId->{}", id);
         roomRepository.deleteById(id);
     }
 
-    private RoomDTO convertToDTO(Room room) {
-        RoomDTO roomDTO = new RoomDTO();
-        roomDTO.setId(room.getId());
-        roomDTO.setRoomNumber(room.getRoomNumber());
-        roomDTO.setType(room.getType());
-        roomDTO.setAvailable(room.isAvailable());
-        return roomDTO;
-    }
-
-    private Room convertToEntity(RoomDTO roomDTO) {
-        Room room = new Room();
-        room.setId(roomDTO.getId());
-        room.setRoomNumber(roomDTO.getRoomNumber());
-        room.setType(roomDTO.getType());
-        room.setAvailable(roomDTO.isAvailable());
-        return room;
-    }
+//    @Override
+//    public List<BedDTO> getAvailableBedsByRoom(Long roomId) {
+//      //  roomRepository.
+//        return null;
+//    }
 }
