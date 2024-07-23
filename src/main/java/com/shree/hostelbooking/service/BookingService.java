@@ -11,8 +11,6 @@ import java.util.List;
 public interface BookingService {
     BookingDTO createBooking(Long roomId, String user, LocalDateTime checkIn, LocalDateTime checkOut);
 
-    BookingDTO createBooking(Long roomId, String user, LocalDateTime checkIn, LocalDateTime checkOut) throws ResourceNotFoundException;
-
     List<BookingDTO> getAllBookings();
 
     BookingDTO getBookingById(Long id) throws ResourceNotFoundException;

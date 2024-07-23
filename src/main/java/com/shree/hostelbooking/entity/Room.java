@@ -16,7 +16,10 @@ public class Room {
     private String roomNumber;
     // different type for now AC / non AC
     private String type;
-//    private boolean isAvailable;
+
+    @ManyToOne
+    @JoinColumn(name = "hostel_id")
+    private Hostel hostel;
 
 //    @OneToMany(cascade = CascadeType.ALL)
 //    private List<Bed> beds;
