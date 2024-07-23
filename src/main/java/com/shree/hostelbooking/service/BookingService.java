@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingService {
-    BookingDTO createBooking(Long roomId, String user, LocalDate checkIn, LocalDate checkOut);
+    BookingDTO createBooking(Long roomId, String user, LocalDateTime checkIn, LocalDateTime checkOut);
+
+    BookingDTO createBooking(Long roomId, String user, LocalDateTime checkIn, LocalDateTime checkOut) throws ResourceNotFoundException;
 
     List<BookingDTO> getAllBookings();
 

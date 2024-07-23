@@ -21,8 +21,8 @@ public class Booking {
     private Bed bed;
     private String user;
     private LocalDateTime bookingTime;
-    private LocalDate checkIn;
-    private LocalDate checkOut;
+//    private LocalDate checkIn;
+//    private LocalDate checkOut;
 
     // Getters and Setters
 }

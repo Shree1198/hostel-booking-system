@@ -58,7 +58,7 @@ public class BedServiceImpl implements BedService {
 
         //Bed bed = modelMapper.map(bedDTO, Bed.class);
         Bed bed = bedRepository.findById(bedDTO.getId()).get();
-        bed.setAvailability(false);
+       // bed.setAvailability(false);
         //  bed.setRoom(modelMapper.map(bedDTO.getRoomDTO());
 
 //        Bed updatedBed = bedRepository.save(bed);
@@ -76,7 +76,7 @@ public class BedServiceImpl implements BedService {
 
         BedDTO bedDTO = new BedDTO();
         bedDTO.setId(bed.getId());
-        bedDTO.setAvailability(bed.isAvailability());
+     //   bedDTO.setAvailability(bed.isAvailability());
         bedDTO.setRoom(modelMapper.map(bed.getRoom(), RoomDTO.class));
         return bedDTO;
     }

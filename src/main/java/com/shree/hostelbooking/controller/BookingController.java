@@ -36,8 +36,8 @@ public class BookingController {
     @PostMapping("/create")
     public ResponseEntity<?> createBooking(@RequestParam Long roomId,
                                            @RequestParam String user,
-                                           @RequestParam LocalDate checkIn,
-                                           @RequestParam LocalDate checkOut) {
+                                           @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime checkIn,
+                                           @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")  LocalDateTime checkOut) {
         if (checkIn == null || checkOut == null || !checkOut.isAfter(checkIn)) {
             return ResponseEntity.badRequest().body("Check-out date must be after check-in date and both dates must be provided");
         }

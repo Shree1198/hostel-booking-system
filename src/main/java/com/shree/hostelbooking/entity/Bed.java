@@ -12,8 +12,6 @@ public class Bed {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
- //   private boolean availability;
-
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "bed_room_id", referencedColumnName = "roomId")
     private Room room;
